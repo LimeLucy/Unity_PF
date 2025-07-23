@@ -1,0 +1,1 @@
+Scenes의 0_StartScene.unity에서 실행시켜주세요.
