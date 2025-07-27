@@ -15,7 +15,7 @@ namespace Casual
 	/// <summary>
 	/// 게임 상태 관리자
 	/// </summary>
-	public class GameStateManager : MonoBehaviour 
+	public class GameStateManager : MonoBehaviour, IGameStateManager
 	{
 		public static GameStateManager instance { get; private set; } = null;
 

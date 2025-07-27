@@ -22880,6 +22880,7 @@ GameObject:
   - component: {fileID: 642245199}
   - component: {fileID: 642245200}
   - component: {fileID: 642245201}
+  - component: {fileID: 642245202}
   m_Layer: 0
   m_Name: GameEngine
   m_TagString: Untagged
@@ -22933,6 +22934,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54cdc5fb7b470aa48bcbf98c6b7145fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &642245202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 642245198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 709ca8489da866a42acfc2237810c7af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentReference:
+    TypeName: 
+  autoRun: 1
+  autoInjectGameObjects: []
 --- !u!1001 &646339868
 PrefabInstance:
   m_ObjectHideFlags: 0

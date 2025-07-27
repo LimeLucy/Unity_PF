@@ -13,7 +13,7 @@ namespace Casual
 		public Quaternion quatPlayerRot;
 	}
 
-	public class SaveLoadManager : MonoBehaviour
+	public class SaveLoadManager : MonoBehaviour, ISaveLoadManager
 	{
 		private string SavePath => Path.Combine(Application.persistentDataPath, "save.json");
 

@@ -21,7 +21,7 @@ namespace Casual
 	/// <summary>
 	/// 메인 상태 관리자
 	/// </summary>
-	public class MainManager : MonoBehaviour
+	public class MainManager : MonoBehaviour, IMainManager
 	{
 		static MainManager s_Instance = null;
 		public static MainManager instance { get { return s_Instance; } }
@@ -31,29 +31,35 @@ namespace Casual
 
 		GameSwitch m_gameSwitch = null;
 		public GameSwitch gameSwitch { get { return m_gameSwitch; } }
-		SaveLoadManager m_saveLoadManager = null;
-		public SaveLoadManager saveLoadManager { get { return m_saveLoadManager; } }
+		ISaveLoadManager m_saveLoadManager = null;
+		public ISaveLoadManager saveLoadManager { get { return m_saveLoadManager; } }
 
-		#region 유니티 함수
-			void Awake()
-			{
-				s_Instance = this;
-				DontDestroyOnLoad(this);
-				m_saveLoadManager = GetComponent<SaveLoadManager>();
-				m_gameSwitch = new GameSwitch();
-			}
 
-			private void OnDestroy()
-			{
-				m_gameSwitch = null;
-				s_Instance = null;
-			}
 
-			private void Start()
-			{		
-				ChangeState(new StateMenu());
-			}
-		#endregion
+		void Awake()
+		{
+			s_Instance = this;
+			DontDestroyOnLoad(this);
+			m_gameSwitch = new GameSwitch();
+		}
+
+		private void OnDestroy()
+		{
+			m_gameSwitch = null;
+			s_Instance = null;
+		}
+
+		private void Start()
+		{		
+			ChangeState(new StateMenu());
+		}
+
+		[VContainer.Inject]
+		public void Construct(ISaveLoadManager saveLoad)
+		{
+			m_saveLoadManager = saveLoad;
+		}
+
 
 		/// <summary>
 		/// 상태를 변경합니다. 

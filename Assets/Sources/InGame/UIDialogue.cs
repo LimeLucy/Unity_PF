@@ -1,30 +1,51 @@
 using System.Collections;
+using VContainer;
 using TMPro;
 using UnityEngine;
+using VContainer.Unity;
 
 namespace Casual
 {
 	public class UIDialogue : MonoBehaviour
 	{
+		UIDialogueLogic m_logic = null;
+
 		[SerializeField]
 		GameObject m_goDialogueUI = null;
-		TextMeshProUGUI m_tmpDialogue = null;
+		TextMeshProUGUI m_tmpDialogue = null;		
 
-		int m_iTotalPage = 0;
-		int m_iCurPage = 0;
+		private void Awake()
+		{
+			_CreateLogic();			
+		}
 
-		#region Unity 함수
-			public void Update()
+		private void OnDestroy()
+		{
+			m_logic = null;
+		}
+
+		public void Update()
+		{
+			if (m_goDialogueUI.activeInHierarchy)
 			{
-				if (m_goDialogueUI.activeInHierarchy)
+				if (Input.GetKeyDown(KeyCode.Space))
 				{
-					if (Input.GetKeyDown(KeyCode.Space))
-					{
-						_NextPage();
-					}
+					_NextPage();
 				}
 			}
-		#endregion
+		}
+
+		void _CreateLogic()
+		{
+			if (m_logic == null)
+			{
+				var container = LifetimeScope.Find<RootLifetimeScope>().Container;
+				var mainManager = container.Resolve<IMainManager>();
+				var gameSwitch = container.Resolve<GameSwitch>();
+				var gameStateManager = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IGameStateManager>();
+				m_logic = new UIDialogueLogic(mainManager, gameStateManager, gameSwitch);
+			}
+		}
 
 		/// <summary>
 		/// 다이얼로그 텍스트 및 기본 셋팅
@@ -32,14 +53,14 @@ namespace Casual
 		/// <param name="script"> 사용되는 Script 연결 </param>
 		public IEnumerator SetDialogueText(Scripts script)
 		{
-			m_tmpDialogue = this.GetComponentInChildren<TextMeshProUGUI>(true);
+			_CreateLogic();
 
-			bool isCheckSwitchOn = MainManager.instance.gameSwitch.GetSwitch(script.m_iCheckEventIdx);			
-			m_tmpDialogue.text = isCheckSwitchOn ? script.m_strTrueText : script.m_strFalseText;
+			m_tmpDialogue = this.GetComponentInChildren<TextMeshProUGUI>(true);
+			m_logic.SetDialogueScript(script);
+			m_tmpDialogue.text = m_logic.GetDialogueText();;
 			m_goDialogueUI.SetActive(true);
 			yield return new WaitForEndOfFrame(); // 한번 화면에 갱신되기 전에는 pagecount가 갱신되지 않으므로 wait
-			m_iTotalPage = m_tmpDialogue.textInfo.pageCount;
-			m_iCurPage = 1;
+			m_logic.SetTotalPage(m_tmpDialogue.textInfo.pageCount);
 		}
 
 		/// <summary>
@@ -55,10 +76,58 @@ namespace Casual
 		/// </summary>
 		void _NextPage()
 		{
-			if (m_iTotalPage > m_iCurPage)
-				m_iCurPage = ++m_tmpDialogue.pageToDisplay;
+			if(!m_logic.NextPage(m_tmpDialogue))
+				HideDialogueUI();
+		}
+	}
+
+	public class UIDialogueLogic
+	{
+		IMainManager m_mainManager;
+		IGameStateManager m_gameStateManager;
+		GameSwitch m_gameSwitch;
+
+		Scripts m_script;
+
+		int m_iTotalPage = 0;
+		int m_iCurPage = 0;
+
+		public UIDialogueLogic(IMainManager mainManager, IGameStateManager gameStateManager, GameSwitch gameSwitch)
+		{
+			m_mainManager = mainManager;
+			m_gameStateManager = gameStateManager;
+			m_gameSwitch = gameSwitch;
+		}
+
+		public void SetDialogueScript(Scripts script)
+		{
+			m_script = script;
+		}
+
+		public string GetDialogueText()
+		{
+			bool isCheckSwitchOn = m_gameSwitch.GetSwitch(m_script.m_iCheckEventIdx);
+			return isCheckSwitchOn ? m_script.m_strTrueText : m_script.m_strFalseText;
+		}
+
+		public void SetTotalPage(int iTotalPage)
+		{
+			m_iTotalPage = iTotalPage;
+			m_iCurPage = 1;
+		}
+
+		public bool NextPage(TextMeshProUGUI textMesh)
+		{
+			bool isContinue = m_iTotalPage > m_iCurPage;
+			if (isContinue)
+				m_iCurPage = ++textMesh.pageToDisplay;
 			else
-				GameStateManager.instance.ChangeState(new DefaultState());
+			{
+				if(m_script.m_iOnEventIdx != -1)
+					m_gameSwitch.SetSwitch(m_script.m_iOnEventIdx, true);
+				m_gameStateManager.ChangeState(new DefaultState());
+			}
+			return isContinue;
 		}
 	}
 }

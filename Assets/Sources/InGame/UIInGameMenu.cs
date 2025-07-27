@@ -1,32 +1,30 @@
 using UnityEngine;
+using VContainer;
+using VContainer.Unity;
 
 namespace Casual
 {
 	public class UIInGameMenu : MonoBehaviour
 	{
-		[SerializeField]
-		GameObject m_goRoot = null;
+		UIInGameMenuLogic m_logic;
 
-		enum eMenuState 
+		[SerializeField]
+		GameObject m_goRoot = null;		
+
+		[SerializeField]
+		GameObject[] m_goCheck = new GameObject[(int)UIInGameMenuLogic.eMenuState.CNT];
+		
+
+		private void Awake()
 		{
-			SAVE = 0,
-			LOAD,
-			CLOSE,
-			EXIT,
-			CNT
+			_CreateLogic();
 		}
 
-		[SerializeField]
-		GameObject[] m_goCheck = new GameObject[(int)eMenuState.CNT];
-
-		eMenuState m_eMenuSel = eMenuState.SAVE;
-
-	#region unity ÇÔ¼ö
 		private void Update()
 		{
 			if (Input.GetKeyDown(KeyCode.Space))
 			{
-				_SelectMenu();
+				m_logic.SelectMenu();
 			}
 			else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.W))		
 			{
@@ -38,70 +36,49 @@ namespace Casual
 			}
 			else if(Input.GetKeyDown(KeyCode.Escape))
 			{
-				_ChangeToDefaultState();
+				m_logic.ChangeToDefaultState();
 			}
 		}
-	#endregion
 
-		void _SelectMenu()
+		void _CreateLogic()
 		{
-			switch(m_eMenuSel)
+			if(m_logic == null)
 			{
-				case eMenuState.SAVE :
-					MainManager.instance.saveLoadManager.Save();
-					_ChangeToDefaultState();
-					break;
-				case eMenuState.LOAD :
-					MainManager.instance.saveLoadManager.Load();
-					GameEngine.instance.SetObjects();
-					_ChangeToDefaultState();
-					break;
-				case eMenuState.CLOSE :
-					_ChangeToDefaultState();
-					break;
-				case eMenuState.EXIT :
-					MainManager.instance.ChangeState(new StateMenu());
-					break;
+				var gameContainer = LifetimeScope.Find<GameLifetimeScope>().Container;
+				var gameStateManager = gameContainer.Resolve<IGameStateManager>();
+				var gameEngine = gameContainer.Resolve<IGameEngine>();
+				var mainManager = LifetimeScope.Find<RootLifetimeScope>().Container.Resolve<IMainManager>();
+				m_logic = new UIInGameMenuLogic(mainManager, gameEngine, gameStateManager);
 			}
 		}
 
 		void _MoveCursor(bool isUp)
 		{
-			int iPlus = isUp ? -1 : 1;
-			m_eMenuSel += iPlus;
-			if(m_eMenuSel < 0)
-				m_eMenuSel = (eMenuState.CNT - 1);
-			else if(m_eMenuSel >= eMenuState.CNT)
-				m_eMenuSel = eMenuState.SAVE;
-
+			m_logic.MoveCursor(isUp);
 			_SetCheckCursor();
 		}
 
 		void _SetCheckCursor()
 		{
-			for (int i = 0; i < (int)eMenuState.CNT; i++)
+			for (int i = 0; i < (int)UIInGameMenuLogic.eMenuState.CNT; i++)
 			{
-				m_goCheck[i].SetActive(i == (int)m_eMenuSel);
+				m_goCheck[i].SetActive(i == (int)m_logic.GetCurSel());
 			}
 		}
 
-		void _ChangeToDefaultState()
-		{
-			GameStateManager.instance.ChangeState(new DefaultState());
-		}
 
-		public void OnClickCursor(int eSel)
+		public void OnClickCursor(int iSel)
 		{
-			m_eMenuSel = (eMenuState)eSel;
+			m_logic.SetCurSel((UIInGameMenuLogic.eMenuState)iSel);
 			_SetCheckCursor();
-			_SelectMenu();
+			m_logic.SelectMenu();
 		}
 
 
 		public void ShowMenu()
 		{
 			m_goRoot.SetActive(true);
-			m_eMenuSel = eMenuState.SAVE;
+			m_logic.SetCurSel(UIInGameMenuLogic.eMenuState.SAVE);
 			_SetCheckCursor();
 		}
 
@@ -109,5 +86,69 @@ namespace Casual
 		{
 			m_goRoot.SetActive(false);
 		}
+	}
+
+	public class UIInGameMenuLogic
+	{
+		IMainManager m_mainManager;
+		IGameEngine m_gameEngine;
+		IGameStateManager m_gameStateManager;
+
+		public enum eMenuState
+		{
+			SAVE = 0,
+			LOAD,
+			CLOSE,
+			EXIT,
+			CNT
+		}
+		eMenuState m_eMenuSel = eMenuState.SAVE;
+
+		public UIInGameMenuLogic(IMainManager mainManager, IGameEngine gameEngine, IGameStateManager gameStateManager)
+		{
+			m_mainManager = mainManager;
+			m_gameEngine = gameEngine;
+			m_gameStateManager = gameStateManager;
+		}
+
+		public void SelectMenu()
+		{
+			switch (m_eMenuSel)
+			{
+				case eMenuState.SAVE:
+					m_mainManager.saveLoadManager.Save();
+					ChangeToDefaultState();
+					break;
+				case eMenuState.LOAD:
+					m_mainManager.saveLoadManager.Load();
+					m_gameEngine.SetObjects();
+					ChangeToDefaultState();
+					break;
+				case eMenuState.CLOSE:
+					ChangeToDefaultState();
+					break;
+				case eMenuState.EXIT:
+					m_mainManager.ChangeState(new StateMenu());
+					break;
+			}
+		}
+
+		public void ChangeToDefaultState()
+		{
+			m_gameStateManager.ChangeState(new DefaultState());
+		}
+
+		public void MoveCursor(bool isUp)
+		{
+			int iPlus = isUp ? -1 : 1;
+			m_eMenuSel += iPlus;
+			if (m_eMenuSel < 0)
+				m_eMenuSel = (eMenuState.CNT - 1);
+			else if (m_eMenuSel >= eMenuState.CNT)
+				m_eMenuSel = eMenuState.SAVE;
+		}
+
+		public void SetCurSel(eMenuState eMenuSel) { m_eMenuSel = eMenuSel; }
+		public eMenuState GetCurSel() { return m_eMenuSel; }
 	}
 }

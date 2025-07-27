@@ -30,9 +30,6 @@ namespace Casual
 
 		public IEnumerator Exit()
 		{
-			if(m_script.m_iOnEventIdx != -1)
-				MainManager.instance.gameSwitch.SetSwitch(m_script.m_iOnEventIdx, true);
-			GameEngine.instance.GetUIDialogue().HideDialogueUI();		
 			yield return null;
 		}
 	}

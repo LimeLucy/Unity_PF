@@ -1,9 +1,13 @@
 using UnityEngine;
+using VContainer;
+using VContainer.Unity;
 
 namespace Casual
 {
 	public class PlayerController : MonoBehaviour
 	{
+		PlayerControllerLogic m_logic = null;		
+
 		Transform m_trfThis;	// 플레이어 transform
 		Animator m_animThis; // 플레이어 animator
 
@@ -36,25 +40,33 @@ namespace Casual
 		[SerializeField]
 		float m_fCameraRoateSpeed = 60f; // 카메라 회전 속도
 
-		#region Unity 함수
-			void Start()
+		void Start()
+		{
+			if(m_logic == null)
 			{
-				_InitComponent();
-				_InitValue();
-			}
+				var gameStateManager = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IGameStateManager>();
+				m_logic = new PlayerControllerLogic(gameStateManager);
+			}			
+			_InitComponent();
+			_InitValue();
+		}
 
-			void Update()
-			{
-				_ProcessKey();
-			}
+		private void OnDestroy()
+		{
+			m_logic = null;
+		}
 
-			private void OnCollisionStay(Collision collision)
-			{
-				m_isCollidingNpc = collision.gameObject.tag == "NPC";
-				if(m_isCollidingNpc)
-					m_zombie = collision.gameObject.GetComponent<ZombieController>();
-			}
-		#endregion
+		void Update()
+		{
+			_ProcessKey();
+		}
+
+		private void OnCollisionStay(Collision collision)
+		{
+			m_isCollidingNpc = collision.gameObject.tag == "NPC";
+			if(m_isCollidingNpc)
+				m_zombie = collision.gameObject.GetComponent<ZombieController>();
+		}
 
 		/// <summary>
 		/// 컴포넌트 초기화
@@ -112,7 +124,7 @@ namespace Casual
 
 			if (Input.GetKeyDown(KeyCode.Escape))
 			{
-				GameStateManager.instance.ChangeState(new InGameMenuState());
+				m_logic.RunInGameMenu();
 			}
 	}
 
@@ -142,6 +154,20 @@ namespace Casual
 					m_trfThis.Translate(new Vector3(0f, 0f, -m_fMoveSpeed * Time.deltaTime));
 					break;
 			}			
+		}
+	}
+
+	public class PlayerControllerLogic
+	{
+		IGameStateManager m_gameStateManager;
+		public PlayerControllerLogic(IGameStateManager gameStateManager)
+		{
+			m_gameStateManager = gameStateManager;
+		}
+
+		public void RunInGameMenu()
+		{
+			m_gameStateManager.ChangeState(new InGameMenuState());
 		}
 	}
 }
