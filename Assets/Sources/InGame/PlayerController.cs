@@ -44,8 +44,10 @@ namespace Casual
 		{
 			if(m_logic == null)
 			{
-				var gameStateManager = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IGameStateManager>();
-				m_logic = new PlayerControllerLogic(gameStateManager);
+				var container = LifetimeScope.Find<GameLifetimeScope>().Container;
+				var gameStateManager = container.Resolve<IGameStateManager>();
+				var uiMediator = container.Resolve<UIMediator>();
+				m_logic = new PlayerControllerLogic(gameStateManager, uiMediator);
 			}			
 			_InitComponent();
 			_InitValue();
@@ -160,14 +162,17 @@ namespace Casual
 	public class PlayerControllerLogic
 	{
 		IGameStateManager m_gameStateManager;
-		public PlayerControllerLogic(IGameStateManager gameStateManager)
+		UIMediator m_ui;
+
+		public PlayerControllerLogic(IGameStateManager gameStateManager, UIMediator ui)
 		{
 			m_gameStateManager = gameStateManager;
+			m_ui = ui;
 		}
 
 		public void RunInGameMenu()
 		{
-			m_gameStateManager.ChangeState(new InGameMenuState());
+			m_gameStateManager.ChangeState(new InGameMenuState(m_ui));
 		}
 	}
 }

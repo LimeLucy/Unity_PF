@@ -8,10 +8,14 @@ namespace Casual
 	public class SelectState : IGameState
 	{
 		public Selects m_select;
+		readonly UIMediator m_ui;
+		readonly IGameEngine m_gameEngine;
 
-		public SelectState(Selects select)
+		public SelectState(Selects select, UIMediator ui, IGameEngine gameEngine)
 		{
 			m_select = select;
+			m_ui = ui;
+			m_gameEngine = gameEngine;
 		}
 
 		/// <summary>
@@ -19,7 +23,7 @@ namespace Casual
 		/// </summary>
 		public IEnumerator Enter()
 		{
-			GameEngine.instance.GetUISelect().SetSelectText(this);
+			m_ui.Choice.Show(this);
 			yield return null;
 		}
 
@@ -28,8 +32,8 @@ namespace Casual
 		/// </summary>
 		public IEnumerator Exit()
 		{
-			GameEngine.instance.SetObjects();
-			GameEngine.instance.GetUISelect().HideSelectUI();
+			m_gameEngine.SetObjects();
+			m_ui.Choice.Hide();
 			yield return null;
 		}
 	}

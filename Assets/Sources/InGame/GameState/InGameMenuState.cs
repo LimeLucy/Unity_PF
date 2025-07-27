@@ -4,15 +4,21 @@ namespace Casual
 {
 	public class InGameMenuState : IGameState
 	{
+		readonly UIMediator m_ui;
+		public InGameMenuState(UIMediator ui)
+		{
+			m_ui = ui;
+		}
+
 		public IEnumerator Enter()
 		{
-			GameEngine.instance.GetUIInGameMenu().ShowMenu();
+			m_ui.Menu.Show();
 			yield return null;
 		}
 
 		public IEnumerator Exit()
 		{
-			GameEngine.instance.GetUIInGameMenu().HideMenu();
+			m_ui.Menu.Hide();
 			yield return null;
 		}
 	}

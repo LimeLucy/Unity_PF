@@ -8,10 +8,12 @@ namespace Casual
 	public class DialogueState : IGameState
 	{
 		Scripts m_script = null;
+		UIMediator m_ui = null;
 
-		public DialogueState(Scripts script)
-		{		
-			m_script = script;		
+		public DialogueState(Scripts script, UIMediator ui)
+		{
+			m_script = script;
+			m_ui = ui;
 		}
 
 		/// <summary>
@@ -20,7 +22,7 @@ namespace Casual
 		/// <returns></returns>
 		public IEnumerator Enter()
 		{
-			yield return GameEngine.instance.GetUIDialogue().SetDialogueText(m_script);
+			yield return m_ui.Dialogue.Show(m_script);
 		}
 
 		/// <summary>

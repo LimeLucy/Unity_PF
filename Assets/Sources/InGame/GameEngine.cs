@@ -9,12 +9,6 @@ namespace Casual
 		[SerializeField]
 		PlayerController m_player; // 플레이어
 		[SerializeField]
-		UIDialogue m_UIdialogue; // 대사창 UI
-		[SerializeField]
-		UISelect m_UISelect; // 선택지창 UI
-		[SerializeField]
-		UIInGameMenu m_UIInGameMenu; // 인게임메뉴 UI
-		[SerializeField]
 		public GameObject m_goHideScreen = null;    // 화면이 셋팅되는 동안 화면을 가림		
 
 		[SerializeField]
@@ -49,8 +43,5 @@ namespace Casual
 		}
 
 		public PlayerController GetPlayer() { return m_player; }		
-		public UIDialogue GetUIDialogue() { return m_UIdialogue; }
-		public UISelect GetUISelect() { return m_UISelect; }
-		public UIInGameMenu GetUIInGameMenu() { return m_UIInGameMenu; }
 	}
 }
