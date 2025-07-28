@@ -6,8 +6,11 @@ public class GameLifetimeScope : LifetimeScope
 {
     protected override void Configure(IContainerBuilder builder)
     {
-		builder.RegisterComponentInHierarchy<IGameEngine>().As<IGameEngine>();
 		builder.RegisterComponentInHierarchy<IGameStateManager>().As<IGameStateManager>();
+
+		builder.RegisterComponentInHierarchy<IScreenMaskController>().As<IScreenMaskController>();
+		builder.RegisterComponentInHierarchy<IChoiceObjectController>().As<IChoiceObjectController>();
+		builder.RegisterComponentInHierarchy<IPlayerProvider>().As<IPlayerProvider>();
 
 		builder.RegisterComponentInHierarchy<UIDialogue>().AsSelf();
 		builder.RegisterComponentInHierarchy<UISelect>().AsSelf();

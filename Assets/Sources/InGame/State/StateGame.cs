@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using VContainer;
+using VContainer.Unity;
 
 namespace Casual
 {
@@ -24,20 +26,23 @@ namespace Casual
 			while (!async.isDone)
 			{
 				yield return null;
-			}		
+			}
 
 			// 게임 화면 돌입 시 셋팅 상태가 보일 수 있으므로 잠시 숨김
-			GameEngine.instance.m_goHideScreen?.SetActive(true);
+			var container = LifetimeScope.Find<GameLifetimeScope>().Container;
+			var screenMask = container.Resolve<IScreenMaskController>();
+			var choiceController = container.Resolve<IChoiceObjectController>();
+			screenMask.ShowMask();
 
 			// 초기 셋팅
-			if(m_isNewSet)
+			if (m_isNewSet)
 				MainManager.instance.gameSwitch.ResetAllSwitches();	// 새로하기시 스위치 리셋
 			else
-				MainManager.instance.saveLoadManager.Load();	// 이어하기시 스위치 로드
-			GameEngine.instance.SetObjects();	// 스위치에 따른 오브젝트 셋팅
-			yield return new WaitForSeconds(0.5f);			
+				MainManager.instance.saveLoadManager.Load();    // 이어하기시 스위치 로드
+			choiceController.UpdateObjects();   // 스위치에 따른 오브젝트 셋팅
+			yield return new WaitForSeconds(0.5f);
 
-			GameEngine.instance.m_goHideScreen?.SetActive(false);
+			screenMask.HideMask();
 
 			GameStateManager.instance.ChangeState(new DefaultState());
 		}

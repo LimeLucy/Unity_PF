@@ -46,9 +46,9 @@ namespace Casual
 			{
 				var gameContainer = LifetimeScope.Find<GameLifetimeScope>().Container;
 				var gameStateManager = gameContainer.Resolve<IGameStateManager>();
-				var gameEngine = gameContainer.Resolve<IGameEngine>();
+				var choiceController = gameContainer.Resolve<IChoiceObjectController>();
 				var mainManager = LifetimeScope.Find<RootLifetimeScope>().Container.Resolve<IMainManager>();
-				m_logic = new UIInGameMenuLogic(mainManager, gameEngine, gameStateManager);
+				m_logic = new UIInGameMenuLogic(mainManager, choiceController, gameStateManager);
 			}
 		}
 
@@ -91,7 +91,7 @@ namespace Casual
 	public class UIInGameMenuLogic
 	{
 		IMainManager m_mainManager;
-		IGameEngine m_gameEngine;
+		IChoiceObjectController m_choiceController;
 		IGameStateManager m_gameStateManager;
 
 		public enum eMenuState
@@ -104,10 +104,10 @@ namespace Casual
 		}
 		eMenuState m_eMenuSel = eMenuState.SAVE;
 
-		public UIInGameMenuLogic(IMainManager mainManager, IGameEngine gameEngine, IGameStateManager gameStateManager)
+		public UIInGameMenuLogic(IMainManager mainManager, IChoiceObjectController choiceController, IGameStateManager gameStateManager)
 		{
 			m_mainManager = mainManager;
-			m_gameEngine = gameEngine;
+			m_choiceController = choiceController;
 			m_gameStateManager = gameStateManager;
 		}
 
@@ -121,7 +121,7 @@ namespace Casual
 					break;
 				case eMenuState.LOAD:
 					m_mainManager.saveLoadManager.Load();
-					m_gameEngine.SetObjects();
+					m_choiceController.UpdateObjects();
 					ChangeToDefaultState();
 					break;
 				case eMenuState.CLOSE:

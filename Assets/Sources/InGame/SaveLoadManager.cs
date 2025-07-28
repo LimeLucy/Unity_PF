@@ -1,5 +1,7 @@
 using System.IO;
 using UnityEngine;
+using VContainer;
+using VContainer.Unity;
 
 namespace Casual
 {
@@ -25,7 +27,8 @@ namespace Casual
 			// savedata 구성
 			SaveData saveData = new SaveData();
 			saveData.switchStates = MainManager.instance.gameSwitch.GetArrSwitch();
-			Transform trfPlayer = GameEngine.instance.GetPlayer().gameObject.transform;
+			var player = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IPlayerProvider>().GetPlayer();
+			Transform trfPlayer = player.gameObject.transform;
 			saveData.vecPlayerPos = trfPlayer.position;
 			saveData.quatPlayerRot = trfPlayer.rotation;
 
@@ -51,8 +54,9 @@ namespace Casual
 
 			// 읽어 온 데이터 셋팅
 			MainManager.instance.gameSwitch.SetArrSwitch(data.switchStates);
-			GameEngine.instance.GetPlayer().gameObject.transform.position = data.vecPlayerPos;
-			GameEngine.instance.GetPlayer().gameObject.transform.rotation = data.quatPlayerRot;
+			var player = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IPlayerProvider>().GetPlayer();
+			player.gameObject.transform.position = data.vecPlayerPos;
+			player.gameObject.transform.rotation = data.quatPlayerRot;
 			Debug.Log("Load completed");
 		}
 

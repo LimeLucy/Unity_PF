@@ -9,13 +9,13 @@ namespace Casual
 	{
 		public Selects m_select;
 		readonly UIMediator m_ui;
-		readonly IGameEngine m_gameEngine;
+		readonly IChoiceObjectController m_choiceController;
 
-		public SelectState(Selects select, UIMediator ui, IGameEngine gameEngine)
+		public SelectState(Selects select, UIMediator ui, IChoiceObjectController choiceController)
 		{
 			m_select = select;
 			m_ui = ui;
-			m_gameEngine = gameEngine;
+			m_choiceController = choiceController;
 		}
 
 		/// <summary>
@@ -32,7 +32,7 @@ namespace Casual
 		/// </summary>
 		public IEnumerator Exit()
 		{
-			m_gameEngine.SetObjects();
+			m_choiceController.UpdateObjects();
 			m_ui.Choice.Hide();
 			yield return null;
 		}

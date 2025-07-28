@@ -1,4 +1,6 @@
 using System.Collections;
+using VContainer;
+using VContainer.Unity;
 
 namespace Casual 
 {
@@ -10,7 +12,8 @@ namespace Casual
 		/// </summary>
 		public IEnumerator Enter()
 		{
-			GameEngine.instance.GetPlayer().IsMovable = true;
+			var player = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IPlayerProvider>().GetPlayer();
+			player.IsMovable = true;
 			yield return null;
 		}
 
@@ -19,7 +22,8 @@ namespace Casual
 		/// </summary>
 		public IEnumerator Exit()
 		{
-			GameEngine.instance.GetPlayer().IsMovable = false;
+			var player = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IPlayerProvider>().GetPlayer();
+			player.IsMovable = false;
 			yield return null;
 		}
 	}

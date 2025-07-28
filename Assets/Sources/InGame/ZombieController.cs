@@ -23,8 +23,8 @@ namespace Casual
 				var gameStateManager = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IGameStateManager>();
 				var gameSwitch = LifetimeScope.Find<RootLifetimeScope>().Container.Resolve<GameSwitch>();
 				var uiMediator = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<UIMediator>();
-				var gameEngine = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IGameEngine>();
-				m_logic = new ZombieControllerLogic(gameStateManager, gameSwitch, uiMediator, gameEngine);
+				var choiceController = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IChoiceObjectController>();
+				m_logic = new ZombieControllerLogic(gameStateManager, gameSwitch, uiMediator, choiceController);
 			}
 		}
 
@@ -47,14 +47,14 @@ namespace Casual
 		IGameStateManager m_gameStateManager;
 		GameSwitch m_gameSwitch;
 		UIMediator m_ui;
-		IGameEngine m_gameEngine;
+		IChoiceObjectController m_choiceController;
 
-		public ZombieControllerLogic(IGameStateManager gameStateManager, GameSwitch gameSwitch, UIMediator ui, IGameEngine gameEngine)
+		public ZombieControllerLogic(IGameStateManager gameStateManager, GameSwitch gameSwitch, UIMediator ui, IChoiceObjectController choiceController)
 		{
 			m_gameStateManager = gameStateManager;
 			m_gameSwitch = gameSwitch;
 			m_ui = ui;
-			m_gameEngine = gameEngine;
+			m_choiceController = choiceController;
 		}
 
 		public void RunEvent(Scripts script)
@@ -63,7 +63,7 @@ namespace Casual
 			if ((isCheckEvt && !string.IsNullOrEmpty(script.m_strTrueText)) || (!isCheckEvt))
 				m_gameStateManager.ChangeState(new DialogueState(script, m_ui));
 			else
-				m_gameStateManager.ChangeState(new SelectState(script.m_trueSelect, m_ui, m_gameEngine));
+				m_gameStateManager.ChangeState(new SelectState(script.m_trueSelect, m_ui, m_choiceController));
 		}
 	}
 }
