@@ -33,7 +33,7 @@ namespace Casual
 		}
 
 		private void Start()
-		{		
+		{
 			ChangeState(new StateMenu());
 		}
 
