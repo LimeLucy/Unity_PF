@@ -8,7 +8,7 @@ namespace Casual
 	{
 		protected override void Configure(IContainerBuilder builder)
 		{
-			builder.RegisterComponentInHierarchy<IMainManager>().As<IMainManager>();
+			builder.RegisterComponentInHierarchy<IMainStateManager>().As<IMainStateManager>();
 			builder.RegisterComponentInHierarchy<ISaveLoadManager>().As<ISaveLoadManager>();
 			builder.RegisterEntryPoint<GameSwitch>(Lifetime.Singleton).AsSelf();
 		}

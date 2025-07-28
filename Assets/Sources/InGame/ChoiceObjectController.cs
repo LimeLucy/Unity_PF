@@ -1,4 +1,5 @@
 using UnityEngine;
+using VContainer;
 
 namespace Casual
 {
@@ -17,9 +18,9 @@ namespace Casual
 		int m_eventIdx = 4;
 
 		public void UpdateObjects()
-		{			
-			bool isOn = MainManager.instance.gameSwitch.GetSwitch(m_eventIdx);
-			Debug.Log(m_eventIdx + "¿©±â" + isOn);
+		{
+			var gameSwitch = GameLifetimeScope.Find<RootLifetimeScope>().Container.Resolve<GameSwitch>();
+			bool isOn = gameSwitch.GetSwitch(m_eventIdx);
 			m_goAGroup.SetActive(!isOn);
 			m_goBGroup.SetActive(isOn);
 		}

@@ -26,7 +26,8 @@ namespace Casual
 		{
 			// savedata 구성
 			SaveData saveData = new SaveData();
-			saveData.switchStates = MainManager.instance.gameSwitch.GetArrSwitch();
+			var gameSwitch = LifetimeScope.Find<RootLifetimeScope>().Container.Resolve<GameSwitch>();
+			saveData.switchStates = gameSwitch.GetArrSwitch();
 			var player = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IPlayerProvider>().GetPlayer();
 			Transform trfPlayer = player.gameObject.transform;
 			saveData.vecPlayerPos = trfPlayer.position;
@@ -53,7 +54,8 @@ namespace Casual
 			SaveData data = JsonUtility.FromJson<SaveData>(json);
 
 			// 읽어 온 데이터 셋팅
-			MainManager.instance.gameSwitch.SetArrSwitch(data.switchStates);
+			var gameSwitch = LifetimeScope.Find<RootLifetimeScope>().Container.Resolve<GameSwitch>();
+			gameSwitch.SetArrSwitch(data.switchStates);
 			var player = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IPlayerProvider>().GetPlayer();
 			player.gameObject.transform.position = data.vecPlayerPos;
 			player.gameObject.transform.rotation = data.quatPlayerRot;

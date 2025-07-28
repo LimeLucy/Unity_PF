@@ -47,8 +47,10 @@ namespace Casual
 				var gameContainer = LifetimeScope.Find<GameLifetimeScope>().Container;
 				var gameStateManager = gameContainer.Resolve<IGameStateManager>();
 				var choiceController = gameContainer.Resolve<IChoiceObjectController>();
-				var mainManager = LifetimeScope.Find<RootLifetimeScope>().Container.Resolve<IMainManager>();
-				m_logic = new UIInGameMenuLogic(mainManager, choiceController, gameStateManager);
+				var container = LifetimeScope.Find<RootLifetimeScope>().Container;
+				var mainManager = container.Resolve<IMainStateManager>();
+				var saveLoadManager = container.Resolve<ISaveLoadManager>();
+				m_logic = new UIInGameMenuLogic(mainManager, choiceController, gameStateManager, saveLoadManager);
 			}
 		}
 
@@ -90,9 +92,10 @@ namespace Casual
 
 	public class UIInGameMenuLogic
 	{
-		IMainManager m_mainManager;
+		IMainStateManager m_mainManager;
 		IChoiceObjectController m_choiceController;
 		IGameStateManager m_gameStateManager;
+		ISaveLoadManager m_saveLoadManager;
 
 		public enum eMenuState
 		{
@@ -104,11 +107,12 @@ namespace Casual
 		}
 		eMenuState m_eMenuSel = eMenuState.SAVE;
 
-		public UIInGameMenuLogic(IMainManager mainManager, IChoiceObjectController choiceController, IGameStateManager gameStateManager)
+		public UIInGameMenuLogic(IMainStateManager mainManager, IChoiceObjectController choiceController, IGameStateManager gameStateManager, ISaveLoadManager saveLoadManager)
 		{
 			m_mainManager = mainManager;
 			m_choiceController = choiceController;
 			m_gameStateManager = gameStateManager;
+			m_saveLoadManager = saveLoadManager;
 		}
 
 		public void SelectMenu()
@@ -116,11 +120,11 @@ namespace Casual
 			switch (m_eMenuSel)
 			{
 				case eMenuState.SAVE:
-					m_mainManager.saveLoadManager.Save();
+					m_saveLoadManager.Save();
 					ChangeToDefaultState();
 					break;
 				case eMenuState.LOAD:
-					m_mainManager.saveLoadManager.Load();
+					m_saveLoadManager.Load();
 					m_choiceController.UpdateObjects();
 					ChangeToDefaultState();
 					break;

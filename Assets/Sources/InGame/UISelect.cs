@@ -50,7 +50,7 @@ namespace Casual
 			if (m_logic == null)
 			{
 				var container = LifetimeScope.Find<RootLifetimeScope>().Container;
-				var mainManager = container.Resolve<IMainManager>();
+				var mainManager = container.Resolve<IMainStateManager>();
 				var gameSwitch = container.Resolve<GameSwitch>();
 				var gameStateManager = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IGameStateManager>();
 				m_logic = new UISelectLogic(mainManager, gameStateManager, gameSwitch);
@@ -101,13 +101,13 @@ namespace Casual
 
 	public class UISelectLogic
 	{
-		IMainManager m_mainManager;
+		IMainStateManager m_mainManager;
 		IGameStateManager m_gameStateManager;
 		GameSwitch m_gameSwitch;
 
 		int m_iSelIdx = 0; // 현재 선택되고 있는 index
 
-		public UISelectLogic(IMainManager mainManager, IGameStateManager gameStateManager, GameSwitch gameSwitch)
+		public UISelectLogic(IMainStateManager mainManager, IGameStateManager gameStateManager, GameSwitch gameSwitch)
 		{
 			m_mainManager = mainManager;
 			m_gameStateManager = gameStateManager;

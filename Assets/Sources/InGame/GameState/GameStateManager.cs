@@ -17,22 +17,8 @@ namespace Casual
 	/// </summary>
 	public class GameStateManager : MonoBehaviour, IGameStateManager
 	{
-		public static GameStateManager instance { get; private set; } = null;
-
 		private IGameState m_curGState;
-
-		#region Unity ÇÔ¼ö
-			private void Awake()
-			{
-				instance = this;
-			}
-
-			private void OnDestroy()
-			{
-				instance = null;
-			}
-		#endregion
-
+	
 		private IEnumerator _ChangeStateRoutine(IGameState newState)
 			{
 				if (m_curGState == newState) yield break;

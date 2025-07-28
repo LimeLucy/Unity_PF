@@ -40,7 +40,7 @@ namespace Casual
 			if (m_logic == null)
 			{
 				var container = LifetimeScope.Find<RootLifetimeScope>().Container;
-				var mainManager = container.Resolve<IMainManager>();
+				var mainManager = container.Resolve<IMainStateManager>();
 				var gameSwitch = container.Resolve<GameSwitch>();
 				var gameStateManager = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IGameStateManager>();
 				m_logic = new UIDialogueLogic(mainManager, gameStateManager, gameSwitch);
@@ -83,7 +83,7 @@ namespace Casual
 
 	public class UIDialogueLogic
 	{
-		IMainManager m_mainManager;
+		IMainStateManager m_mainManager;
 		IGameStateManager m_gameStateManager;
 		GameSwitch m_gameSwitch;
 
@@ -92,7 +92,7 @@ namespace Casual
 		int m_iTotalPage = 0;
 		int m_iCurPage = 0;
 
-		public UIDialogueLogic(IMainManager mainManager, IGameStateManager gameStateManager, GameSwitch gameSwitch)
+		public UIDialogueLogic(IMainStateManager mainManager, IGameStateManager gameStateManager, GameSwitch gameSwitch)
 		{
 			m_mainManager = mainManager;
 			m_gameStateManager = gameStateManager;

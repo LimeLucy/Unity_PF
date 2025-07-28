@@ -1,9 +1,7 @@
 namespace Casual
 {
-	public interface IMainManager
+	public interface IMainStateManager
 	{
-		GameSwitch gameSwitch { get; }
-		ISaveLoadManager saveLoadManager { get; }
 		void ChangeState(IState newState);
 	}
 }

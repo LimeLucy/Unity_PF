@@ -19,7 +19,7 @@ namespace Casual
 			if(m_logic == null)
 			{
 				var container = LifetimeScope.Find<RootLifetimeScope>().Container;
-				var mainManager = container.Resolve<IMainManager>();
+				var mainManager = container.Resolve<IMainStateManager>();
 				var saveManager = container.Resolve<ISaveLoadManager>();
 				m_logic = new MenuSceneLogic(mainManager, saveManager);
 			}
@@ -53,9 +53,9 @@ namespace Casual
 
 	public class MenuSceneLogic
 	{
-		readonly IMainManager m_mainManager;
+		readonly IMainStateManager m_mainManager;
 		readonly ISaveLoadManager m_saveLoadManager;
-		public MenuSceneLogic(IMainManager mainManager, ISaveLoadManager saveManager)
+		public MenuSceneLogic(IMainStateManager mainManager, ISaveLoadManager saveManager)
 		{
 			m_mainManager = mainManager;
 			m_saveLoadManager = saveManager;
