@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4306297980699367279}
   m_Layer: 0
   m_Name: Zombie
-  m_TagString: Untagged
+  m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -33,6 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1830046148017263327}
+  - {fileID: 8076385168856910064}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 115.2, z: 0}
 --- !u!114 &5492523079268758525
@@ -47,6 +48,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 230d116e3df88b640a4455430481a3fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_script: {fileID: 11400000, guid: ebca73ce5c634234fa2aedc0e1376e16, type: 2}
+  m_marker: {fileID: 8076385168856910064}
 --- !u!136 &4924523783953439897
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -97,6 +100,37 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 122
   m_CollisionDetection: 0
+--- !u!1 &8223641629383540971
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8076385168856910064}
+  m_Layer: 0
+  m_Name: MarkerPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8076385168856910064
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8223641629383540971}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.18, z: 0}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1947351143813026572}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &8739235809300889876
 PrefabInstance:
   m_ObjectHideFlags: 0

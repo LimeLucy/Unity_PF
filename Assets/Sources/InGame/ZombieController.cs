@@ -15,6 +15,10 @@ namespace Casual
 		}
 		[SerializeField]
 		Scripts m_script = null;
+		[SerializeField]
+		Transform m_marker = null;
+		[SerializeField]
+		string m_strName = null;
 
 		private void Awake()
 		{
@@ -39,6 +43,16 @@ namespace Casual
 		public void RunEvent()
 		{
 			m_logic.RunEvent(m_script);
+		}
+
+		public Vector3 GetMarkerPos()
+		{
+			return m_marker.position;
+		}
+
+		public string GetName()
+		{
+			return m_strName;
 		}
 	}
 

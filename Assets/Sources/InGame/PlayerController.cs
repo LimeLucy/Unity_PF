@@ -15,7 +15,12 @@ namespace Casual
 		public bool IsMovable
 		{
 			get { return m_isMovable; }
-			set { m_isMovable = value; }
+			set 
+			{ 
+				m_isMovable = value;
+				if(IsMovable && m_zombie != null)
+					m_logic.ShowNpcName(m_zombie);
+			}
 		}		
 
 		// 애니메이션 해쉬 값
@@ -63,11 +68,24 @@ namespace Casual
 			_ProcessKey();
 		}
 
-		private void OnCollisionStay(Collision collision)
+		private void OnCollisionEnter(Collision collision)
 		{
-			m_isCollidingNpc = collision.gameObject.tag == "NPC";
-			if(m_isCollidingNpc)
+			m_isCollidingNpc = (collision.gameObject.tag == "NPC");
+			if (m_isCollidingNpc)
+			{
 				m_zombie = collision.gameObject.GetComponent<ZombieController>();
+				m_logic.ShowNpcName(m_zombie);
+			}
+		}
+
+		private void OnCollisionExit(Collision collision)
+		{
+			if(m_isCollidingNpc)
+			{
+				m_logic.HideNpcName();
+				m_isCollidingNpc = false;
+				m_zombie = null;
+			}
 		}
 
 		/// <summary>
@@ -97,41 +115,36 @@ namespace Casual
 			if(!m_isMovable) return;
 
 			if(Input.GetKeyDown(KeyCode.Space) && m_isCollidingNpc)
+			{
+				m_logic.HideNpcName();
 				m_zombie?.RunEvent();
+			}
 
-			if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S))
+			if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp (KeyCode.A) || Input.GetKeyUp(KeyCode.D))
 			{
 				_MoveSide(eMoveDir.None);
 			}
 			else
 			{
 				if(Input.GetKey(KeyCode.W))
-				{
 					_MoveSide(eMoveDir.Front);
-				}
 				else if(Input.GetKey(KeyCode.S))
-				{
 					_MoveSide(eMoveDir.Back);
-				}
-
-				if(Input.GetKey(KeyCode.A))
-				{
+				else if(Input.GetKey(KeyCode.A))
 					_MoveSide(eMoveDir.Left);
-				}
 				else if(Input.GetKey(KeyCode.D))
-				{
 					_MoveSide(eMoveDir.Right);
-				}
-			}
-
-			if (Input.GetKeyDown(KeyCode.Escape))
-			{
-				m_logic.RunInGameMenu();
+				else if(Input.GetKey(KeyCode.Q))
+					_MoveCamera(eMoveDir.Left);
+				else if(Input.GetKey(KeyCode.E))
+					_MoveCamera(eMoveDir.Right);
+				else if(Input.GetKeyDown(KeyCode.Escape))
+					m_logic.RunInGameMenu();
 			}
 	}
 
 		/// <summary>
-		/// 포지션과 로테이션 변경
+		/// 포지션 변경
 		/// </summary>
 		/// <param name="eDir"> 원하는 이동 Direction </param>
 		void _MoveSide(eMoveDir eDir)
@@ -142,10 +155,12 @@ namespace Casual
 					m_animThis.SetFloat(r_iMoveSpeed, 0f);
 					break;
 				case eMoveDir.Left :
-					m_trfThis.Rotate(new Vector3(0, -m_fCameraRoateSpeed * Time.deltaTime, 0));
+					m_animThis.SetFloat(r_iMoveSpeed, 0.38f);
+					m_trfThis.Translate(new Vector3(-(m_fMoveSpeed * Time.deltaTime), 0f, 0f));
 					break;
 				case eMoveDir.Right :
-					m_trfThis.Rotate(new Vector3(0, m_fCameraRoateSpeed * Time.deltaTime, 0));
+					m_animThis.SetFloat(r_iMoveSpeed, 0.38f);
+					m_trfThis.Translate(new Vector3(m_fMoveSpeed * Time.deltaTime, 0f, 0f));
 					break;
 				case eMoveDir.Front :
 					m_animThis.SetFloat(r_iMoveSpeed, 0.38f);
@@ -156,6 +171,19 @@ namespace Casual
 					m_trfThis.Translate(new Vector3(0f, 0f, -m_fMoveSpeed * Time.deltaTime));
 					break;
 			}			
+		}
+
+		void _MoveCamera(eMoveDir eDir)
+		{
+			switch (eDir)
+			{
+				case eMoveDir.Left :
+					m_trfThis.Rotate(new Vector3(0, -m_fCameraRoateSpeed * Time.deltaTime, 0));
+					break;
+				case eMoveDir.Right :
+					m_trfThis.Rotate(new Vector3(0, m_fCameraRoateSpeed * Time.deltaTime, 0));
+					break;
+			}
 		}
 	}
 
@@ -173,6 +201,16 @@ namespace Casual
 		public void RunInGameMenu()
 		{
 			m_gameStateManager.ChangeState(new InGameMenuState(m_ui));
+		}
+
+		public void ShowNpcName(ZombieController zombie)
+		{
+			m_ui.NameMarker.Show(zombie);
+		}
+
+		public void HideNpcName()
+		{
+			m_ui.NameMarker.Hide();
 		}
 	}
 }

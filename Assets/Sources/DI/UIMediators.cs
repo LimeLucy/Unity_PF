@@ -19,11 +19,11 @@ namespace Casual
 		public void Hide() => _dialogueUI.HideDialogueUI();
 	}
 
-	public class ChoiceUIController
+	public class SelectUIController
 	{
 		private readonly UISelect _choiceUI;
 
-		public ChoiceUIController(UISelect choiceUI)
+		public SelectUIController(UISelect choiceUI)
 		{
 			_choiceUI = choiceUI;
 		}
@@ -45,17 +45,32 @@ namespace Casual
 		public void Hide() => _menuUI.HideMenu();
 	}
 
+	public class NameMarkerUIController
+	{
+		private readonly UINameMarker _nameMarkerUI;
+
+		public NameMarkerUIController(UINameMarker namemarkerUI)
+		{
+			_nameMarkerUI = namemarkerUI;
+		}
+
+		public void Show(ZombieController zombie) => _nameMarkerUI.Show(zombie);
+		public void Hide() => _nameMarkerUI.Hide();
+	}
+
 	public class UIMediator
 	{
 		public DialogueUIController Dialogue { get; }
-		public ChoiceUIController Choice { get; }
+		public SelectUIController Choice { get; }
 		public GameMenuUIController Menu { get; }
+		public NameMarkerUIController NameMarker { get; }
 
-		public UIMediator(DialogueUIController dialogue, ChoiceUIController choice, GameMenuUIController menu)
+		public UIMediator(DialogueUIController dialogue, SelectUIController choice, GameMenuUIController menu, NameMarkerUIController nameMarker)
 		{
 			Dialogue = dialogue;
 			Choice = choice;
 			Menu = menu;
+			NameMarker = nameMarker;
 		}
 	}
 }
