@@ -10,6 +10,7 @@ public class GameLifetimeScope : LifetimeScope
 
 		builder.RegisterComponentInHierarchy<IScreenMaskController>().As<IScreenMaskController>();
 		builder.RegisterComponentInHierarchy<IPlayerProvider>().As<IPlayerProvider>();
+		builder.RegisterComponentInHierarchy<IGameRoot>().As<IGameRoot>();
 
 		// UI
 		builder.RegisterComponentInHierarchy<UIDialogue>().AsSelf();
@@ -21,6 +22,6 @@ public class GameLifetimeScope : LifetimeScope
 		builder.Register<SelectUIController>(Lifetime.Singleton);
 		builder.Register<GameMenuUIController>(Lifetime.Singleton);
 		builder.Register<NameMarkerUIController>(Lifetime.Singleton);
-		builder.Register<UIMediator>(Lifetime.Singleton);
+		builder.Register<UIMediator>(Lifetime.Singleton);		
 	}
 }

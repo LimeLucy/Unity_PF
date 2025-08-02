@@ -1,9 +1,19 @@
 using UnityEngine;
 
-public class GameRoot : MonoBehaviour
+public interface IGameRoot
+{
+	void Dispose();
+}
+
+public class GameRoot : MonoBehaviour, IGameRoot
 {
     void Awake()
     {
         DontDestroyOnLoad(this);		
     }
+
+	public void Dispose()
+	{
+		Destroy(gameObject);
+	}
 }
