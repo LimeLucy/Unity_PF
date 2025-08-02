@@ -5,15 +5,59 @@ using VContainer.Unity;
 
 namespace Casual
 {
-/// <summary>
-/// 저장될 savedata 구조
-/// </summary>
+	/// <summary>
+	/// 저장될 savedata 구조
+	/// </summary>
 	public class SaveData
 	{
 		public bool[] m_switchStates = new bool[GameSwitch.CNT_SWITCH];
 		public Vector3 m_vecPlayerPos = Vector3.zero;
 		public Quaternion m_quatPlayerRot;
 		public string m_strSceneName;
+	}
+
+	public interface ISaveLoadManager
+	{
+		/// <summary>
+		/// 저장
+		/// </summary>
+		void Save();
+
+		/// <summary>
+		/// 로드
+		/// </summary>
+		void Load();
+
+		/// <summary>
+		/// 세이브파일 존재 여부
+		/// </summary>
+		/// <returns>true : 있음, false : 없음</returns>
+		bool IsExistSaveFile();
+
+		/// <summary>
+		/// 저장된 씬 이름 가져오기
+		/// </summary>
+		/// <returns></returns>
+		string GetSavedSceneName();
+
+		/// <summary>
+		/// 현재 씬 이름 셋팅
+		/// </summary>
+		/// <param name="strSceneName"></param>
+		void SetCurrentSceneName(string sceneName);
+
+		/// <summary>
+		/// 현재 씬 이름 가져오기
+		/// </summary>
+		/// <returns></returns>
+		string GetCurrentSceneName();
+
+		/// <summary>
+		/// 플레이어 셋팅 스폰 포지션을 세이브파일로 할지, 데이터로 할지 판단하여 셋팅
+		/// </summary>
+		/// <param name="isNew"></param>
+		/// <param name="strSceneName"></param>
+		void ApplySpawnPosition(bool isNew, string sceneName);
 	}
 
 	public class SaveLoadManager : MonoBehaviour, ISaveLoadManager
@@ -23,10 +67,7 @@ namespace Casual
 
 		private string m_strSavePath => Path.Combine(Application.persistentDataPath, "save.json");
 		string m_strCurSceneName;
-
-		/// <summary>
-		/// 저장
-		/// </summary>
+		
 		public void Save()
 		{
 			// savedata 구성
@@ -44,10 +85,7 @@ namespace Casual
 			File.WriteAllText(m_strSavePath, json);
 			Debug.Log($"Saved to {m_strSavePath}");
 		}
-
-		/// <summary>
-		/// 로드
-		/// </summary>
+		
 		public void Load()
 		{
 			if (!IsExistSaveFile())
@@ -65,16 +103,12 @@ namespace Casual
 			m_strCurSceneName = data.m_strSceneName;
 			Debug.Log("Load completed");
 		}
-
-		/// <summary>
-		/// 세이브파일 존재 여부
-		/// </summary>
-		/// <returns>true : 있음, false : 없음</returns>
+		
 		public bool IsExistSaveFile()
 		{
 			return File.Exists(m_strSavePath);
 		}
-
+		
 		public string GetSavedSceneName()
 		{ 
 			if(!IsExistSaveFile()) return null;
@@ -82,15 +116,17 @@ namespace Casual
 			SaveData saveData = JsonUtility.FromJson<SaveData>(json);
 			return saveData.m_strSceneName;
 		}
+		
 		public void SetCurrentSceneName(string strSceneName)
 		{
 			m_strCurSceneName = strSceneName;
 		}
+		
 		public string GetCurrentSceneName()
 		{
 			return m_strCurSceneName;
 		}
-
+		
 		public void ApplySpawnPosition(bool isNew, string strSceneName)
 		{
 			bool isSetNew = true;

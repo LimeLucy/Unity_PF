@@ -40,6 +40,9 @@ namespace Casual
 			}
 		}
 
+		/// <summary>
+		/// 로직 class 생성
+		/// </summary>
 		void _CreateLogic()
 		{
 			if(m_logic == null)
@@ -55,12 +58,19 @@ namespace Casual
 			}
 		}
 
+		/// <summary>
+		/// 커서 이동 처리
+		/// </summary>
+		/// <param name="isUp"></param>
 		void _MoveCursor(bool isUp)
 		{
 			m_logic.MoveCursor(isUp);
 			_SetCheckCursor();
 		}
 
+		/// <summary>
+		/// 이동된 커서값에 따라 실제 UI 커서 처리
+		/// </summary>
 		void _SetCheckCursor()
 		{
 			for (int i = 0; i < (int)UIInGameMenuLogic.eMenuState.CNT; i++)
@@ -69,7 +79,10 @@ namespace Casual
 			}
 		}
 
-
+		/// <summary>
+		/// Inspector에서 터치시 불리는 커서 함수
+		/// </summary>
+		/// <param name="iSel"></param>
 		public void OnClickCursor(int iSel)
 		{
 			m_logic.SetCurSel((UIInGameMenuLogic.eMenuState)iSel);
@@ -77,7 +90,9 @@ namespace Casual
 			m_logic.SelectMenu();
 		}
 
-
+		/// <summary>
+		/// 메뉴 보여주기
+		/// </summary>
 		public void ShowMenu()
 		{
 			m_goRoot.SetActive(true);
@@ -85,6 +100,9 @@ namespace Casual
 			_SetCheckCursor();
 		}
 
+		/// <summary>
+		/// 메뉴 숨기기
+		/// </summary>
 		public void HideMenu()
 		{
 			m_goRoot.SetActive(false);
@@ -118,6 +136,9 @@ namespace Casual
 			m_gameRoot = gameRoot;
 		}
 
+		/// <summary>
+		/// 메뉴 선택시 처리
+		/// </summary>
 		public void SelectMenu()
 		{
 			switch (m_eMenuSel)
@@ -141,11 +162,18 @@ namespace Casual
 			}
 		}
 
+		/// <summary>
+		/// 다시 게임 상태로 돌아가기
+		/// </summary>
 		public void ChangeToDefaultState()
 		{
 			m_gameStateManager.ChangeState(new DefaultState());
 		}
 
+		/// <summary>
+		/// 커서 이동
+		/// </summary>
+		/// <param name="isUp">true : 위로, false : 아래로</param>
 		public void MoveCursor(bool isUp)
 		{
 			int iPlus = isUp ? -1 : 1;
@@ -156,7 +184,16 @@ namespace Casual
 				m_eMenuSel = eMenuState.SAVE;
 		}
 
+		/// <summary>
+		/// 커서 선택 설정
+		/// </summary>
+		/// <param name="eMenuSel"></param>
 		public void SetCurSel(eMenuState eMenuSel) { m_eMenuSel = eMenuSel; }
+
+		/// <summary>
+		/// 현재 선택된 커서 return
+		/// </summary>
+		/// <returns></returns>
 		public eMenuState GetCurSel() { return m_eMenuSel; }
 	}
 }

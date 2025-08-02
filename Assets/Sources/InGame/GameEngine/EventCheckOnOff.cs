@@ -1,4 +1,3 @@
-using Casual;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;

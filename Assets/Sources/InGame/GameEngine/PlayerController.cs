@@ -49,7 +49,7 @@ namespace Casual
 		[SerializeField]
 		float m_fCameraRoateSpeed = 60f; // 카메라 회전 속도
 
-		void Start()
+		private void Start()
 		{
 			if(m_logic == null)
 			{
@@ -67,12 +67,12 @@ namespace Casual
 			m_logic = null;
 		}
 
-		void Update()
+		private void Update()
 		{
 			_ProcessKey();
 		}
 
-		private void OnCollisionEnter(Collision collision)
+		void OnCollisionEnter(Collision collision)
 		{
 			m_isCollidingNpc = (collision.gameObject.tag == "NPC");
 			if (m_isCollidingNpc)
@@ -82,7 +82,7 @@ namespace Casual
 			}
 		}
 
-		private void OnCollisionExit(Collision collision)
+		void OnCollisionExit(Collision collision)
 		{
 			if(m_isCollidingNpc)
 			{

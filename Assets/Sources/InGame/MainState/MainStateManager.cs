@@ -15,7 +15,15 @@ namespace Casual
 		/// 스테이트 변경시 해제 상태에서 필요한 것들 구현 합니다.
 		/// </summary>
 		public IEnumerator Destroy() { yield return null; }
+	}
 
+	public interface IMainStateManager
+	{
+		/// <summary>
+		/// 상태를 변경합니다. 
+		/// </summary>
+		/// <param name="newState"> 변경할 상태 </param>
+		void ChangeState(IState newState);
 	}
 
 	/// <summary>
@@ -27,7 +35,7 @@ namespace Casual
 		bool m_isLoading = false;
 
 
-		void Awake()
+		private void Awake()
 		{
 			DontDestroyOnLoad(this);
 		}
@@ -36,12 +44,7 @@ namespace Casual
 		{
 			ChangeState(new StateMenu());
 		}
-
-
-		/// <summary>
-		/// 상태를 변경합니다. 
-		/// </summary>
-		/// <param name="newState"> 변경할 상태 </param>
+		
 		IEnumerator _ChangeState(IState newState)
 		{
 			if (m_isLoading) yield break;
@@ -51,7 +54,6 @@ namespace Casual
 			yield return StartCoroutine(newState.Load());
 			m_currentState = newState;
 		}
-
 
 		public void ChangeState(IState newState)
 		{

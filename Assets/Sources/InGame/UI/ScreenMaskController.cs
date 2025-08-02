@@ -4,7 +4,14 @@ namespace Casual
 {
 	public interface IScreenMaskController
 	{
+		/// <summary>
+		/// Hide Mask¸¦ Åµ´Ï´Ù.
+		/// </summary>
 		void ShowMask();
+
+		/// <summary>
+		/// /// Hide Mask¸¦ ²ü´Ï´Ù.
+		/// </summary>
 		void HideMask();
 	}
 

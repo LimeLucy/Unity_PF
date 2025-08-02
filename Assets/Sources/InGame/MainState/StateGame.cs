@@ -27,15 +27,14 @@ namespace Casual
 		public IEnumerator Load()
 		{			
 			// Root 로드
-			if(!IsMainSceneLoaded())
+			if(!_IsMainSceneLoaded())
 			{
 				var async = SceneManager.LoadSceneAsync(m_RootSceneName);
 				while (!async.isDone)
 				{
 					yield return null;
 				}
-			}
-			
+			}			
 
 			// 게임 화면 돌입 시 셋팅 상태가 보일 수 있으므로 잠시 숨김
 			var container = LifetimeScope.Find<RootLifetimeScope>().Container;
@@ -46,6 +45,7 @@ namespace Casual
 			var screenMask = gameContainer.Resolve<IScreenMaskController>();			
 			var gameStateManager = gameContainer.Resolve<IGameStateManager>();
 
+			// 이전 씬 해제
 			string strCurSceneName = saveLoadManager.GetCurrentSceneName();
 			if (strCurSceneName != null)
 			{
@@ -54,10 +54,17 @@ namespace Casual
 			}
 
 			screenMask.ShowMask();
+			// 새로운 씬 로드
 			var gameAsync = SceneManager.LoadSceneAsync(m_strSceneName, LoadSceneMode.Additive);
 			while (!gameAsync.isDone)
 			{
 				yield return null;
+			}
+
+			Scene loadedScene = SceneManager.GetSceneByName(m_strSceneName);
+			if (loadedScene.IsValid() && loadedScene.isLoaded)
+			{
+				SceneManager.SetActiveScene(loadedScene);
 			}
 
 			if (m_isNewSet)
@@ -70,7 +77,7 @@ namespace Casual
 				saveLoadManager.Load();    // 이어하기시 스위치 로드
 				saveLoadManager.ApplySpawnPosition(false, m_strSceneName);
 			}
-			else
+			else  // 그 외 단순 맵 이동시 캐릭터 위치 설정
 			{
 				saveLoadManager.ApplySpawnPosition(true, m_strSceneName);
 			}
@@ -82,22 +89,26 @@ namespace Casual
 			screenMask.HideMask();
 
 			gameStateManager.ChangeState(new DefaultState());
-		}
-
-		bool IsMainSceneLoaded()
-		{
-			for(int i = 0; i < SceneManager.sceneCount; i++)
-			{
-				Scene loadedScene = SceneManager.GetSceneAt(i);
-				if(loadedScene.name == m_RootSceneName)
-					return true;
-			}
-			return false;
-		}
+		}		
 
 		public IEnumerator Destroy()
 		{			
 			yield return null;
+		}
+
+		/// <summary>
+		/// GameRoot 씬이 로드되어 있는지 체크 
+		/// </summary>
+		/// <returns></returns>
+		bool _IsMainSceneLoaded()
+		{
+			for (int i = 0; i < SceneManager.sceneCount; i++)
+			{
+				Scene loadedScene = SceneManager.GetSceneAt(i);
+				if (loadedScene.name == m_RootSceneName)
+					return true;
+			}
+			return false;
 		}
 	}
 }

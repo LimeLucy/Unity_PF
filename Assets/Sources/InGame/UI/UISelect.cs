@@ -92,7 +92,9 @@ namespace Casual
 				m_goCheck[i].SetActive(iSelIdx == i);
 		}
 
-		
+		/// <summary>
+		/// 선택지 선택 완료
+		/// </summary>
 		public void EndSelect()
 		{
 			m_logic.EndSelect(m_selectState);

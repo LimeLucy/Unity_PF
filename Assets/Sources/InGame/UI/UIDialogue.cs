@@ -24,7 +24,7 @@ namespace Casual
 			m_logic = null;
 		}
 
-		public void Update()
+		private void Update()
 		{
 			if (m_goDialogueUI.activeInHierarchy)
 			{
@@ -35,6 +35,9 @@ namespace Casual
 			}
 		}
 
+		/// <summary>
+		/// 로직 부분 담당할 class 생성
+		/// </summary>
 		void _CreateLogic()
 		{
 			if (m_logic == null)
@@ -45,6 +48,15 @@ namespace Casual
 				var gameStateManager = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IGameStateManager>();
 				m_logic = new UIDialogueLogic(mainManager, gameStateManager, gameSwitch);
 			}
+		}
+
+		/// <summary>
+		/// 다음 페이지로 넘깁니다. 마지막 페이지일 경우 상태가 기본으로 돌아갑니다.
+		/// </summary>
+		void _NextPage()
+		{
+			if (!m_logic.NextPage(m_tmpDialogue))
+				HideDialogueUI();
 		}
 
 		/// <summary>
@@ -70,15 +82,6 @@ namespace Casual
 		{
 			m_goDialogueUI.SetActive(false);
 		}
-
-		/// <summary>
-		/// 다음 페이지로 넘깁니다. 마지막 페이지일 경우 상태가 기본으로 돌아갑니다.
-		/// </summary>
-		void _NextPage()
-		{
-			if(!m_logic.NextPage(m_tmpDialogue))
-				HideDialogueUI();
-		}
 	}
 
 	public class UIDialogueLogic
@@ -99,23 +102,40 @@ namespace Casual
 			m_gameSwitch = gameSwitch;
 		}
 
+		/// <summary>
+		/// 다이얼로그 스크립트 셋팅
+		/// </summary>
+		/// <param name="script"></param>
 		public void SetDialogueScript(Scripts script)
 		{
 			m_script = script;
 		}
 
+		/// <summary>
+		/// 다이얼로그에서 사용될 텍스트 리턴
+		/// </summary>
+		/// <returns></returns>
 		public string GetDialogueText()
 		{
 			bool isCheckSwitchOn = m_gameSwitch.GetSwitch(m_script.m_iCheckEventIdx);
 			return isCheckSwitchOn ? m_script.m_strTrueText : m_script.m_strFalseText;
 		}
 
+		/// <summary>
+		/// 전체 페이지 카운트 셋팅
+		/// </summary>
+		/// <param name="iTotalPage"></param>
 		public void SetTotalPage(int iTotalPage)
 		{
 			m_iTotalPage = iTotalPage;
 			m_iCurPage = 1;
 		}
 
+		/// <summary>
+		/// 다음 페이지 처리
+		/// </summary>
+		/// <param name="textMesh"></param>
+		/// <returns></returns>
 		public bool NextPage(TextMeshProUGUI textMesh)
 		{
 			bool isContinue = m_iTotalPage > m_iCurPage;

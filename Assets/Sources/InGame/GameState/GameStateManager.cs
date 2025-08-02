@@ -12,6 +12,11 @@ namespace Casual
 		IEnumerator Exit();
 	}
 
+	public interface IGameStateManager
+	{
+		void ChangeState(IGameState newState);
+	}
+
 	/// <summary>
 	/// 게임 상태 관리자
 	/// </summary>

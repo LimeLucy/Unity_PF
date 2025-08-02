@@ -15,7 +15,6 @@ namespace Casual
 		{
 			yield return _dialogueUI.SetDialogueText(script);
 		}
-
 		public void Hide() => _dialogueUI.HideDialogueUI();
 	}
 
@@ -29,6 +28,7 @@ namespace Casual
 		}
 
 		public void Show(SelectState state) => _choiceUI.SetSelectText(state);
+
 		public void Hide() => _choiceUI.HideSelectUI();
 	}
 
@@ -42,6 +42,7 @@ namespace Casual
 		}
 
 		public void Show() => _menuUI.ShowMenu();
+
 		public void Hide() => _menuUI.HideMenu();
 	}
 
@@ -55,6 +56,7 @@ namespace Casual
 		}
 
 		public void Show(ZombieController zombie) => _nameMarkerUI.Show(zombie);
+
 		public void Hide() => _nameMarkerUI.Hide();
 	}
 

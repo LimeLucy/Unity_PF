@@ -7,7 +7,6 @@ public class GameLifetimeScope : LifetimeScope
     protected override void Configure(IContainerBuilder builder)
     {
 		builder.RegisterComponentInHierarchy<IGameStateManager>().As<IGameStateManager>();
-
 		builder.RegisterComponentInHierarchy<IScreenMaskController>().As<IScreenMaskController>();
 		builder.RegisterComponentInHierarchy<IPlayerProvider>().As<IPlayerProvider>();
 		builder.RegisterComponentInHierarchy<IGameRoot>().As<IGameRoot>();
