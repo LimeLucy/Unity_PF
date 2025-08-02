@@ -9,7 +9,6 @@ public class GameLifetimeScope : LifetimeScope
 		builder.RegisterComponentInHierarchy<IGameStateManager>().As<IGameStateManager>();
 
 		builder.RegisterComponentInHierarchy<IScreenMaskController>().As<IScreenMaskController>();
-		builder.RegisterComponentInHierarchy<IChoiceObjectController>().As<IChoiceObjectController>();
 		builder.RegisterComponentInHierarchy<IPlayerProvider>().As<IPlayerProvider>();
 
 		// UI

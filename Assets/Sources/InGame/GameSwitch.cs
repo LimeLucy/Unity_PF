@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Casual
 {
@@ -7,6 +8,23 @@ namespace Casual
 		// switch
 		public const int CNT_SWITCH = 10; // 스위치 갯수
 		bool[] m_isArrSwitch = new bool[CNT_SWITCH]; // 스위치
+
+		EventCheckOnOff[] m_eventCheckOnOffs = null;
+		public void SetArrCheckOnOff(EventCheckOnOff[] eventCheckOnOffs)
+		{
+			m_eventCheckOnOffs = eventCheckOnOffs;
+		}
+
+		public void CheckOnOffs()
+		{
+			if(m_eventCheckOnOffs != null)
+			{
+				foreach (EventCheckOnOff evtCheck in m_eventCheckOnOffs)
+				{
+					evtCheck?.SetOnOff();
+				}
+			}
+		}
 
 		/// <summary>
 		/// 스위치 상태를 셋팅합니다.

@@ -68,12 +68,19 @@ namespace Casual
 
 		public void NewGame()
 		{
-			m_mainManager.ChangeState(new StateGame(true));
+			string strNewScene = "3_GameScene";
+			m_saveLoadManager.SetCurrentSceneName(null);
+			m_mainManager.ChangeState(new StateGame(true, false, strNewScene));
 		}
 
 		public void ContinueGame()
 		{
-			m_mainManager.ChangeState(new StateGame(false));
+			string strSceneName = m_saveLoadManager.GetSavedSceneName();
+			m_saveLoadManager.SetCurrentSceneName(null);
+			if (strSceneName == null)
+				NewGame();
+			else
+				m_mainManager.ChangeState(new StateGame(false, true, strSceneName));
 		}
 	}
 }

@@ -45,12 +45,12 @@ namespace Casual
 			if(m_logic == null)
 			{
 				var gameContainer = LifetimeScope.Find<GameLifetimeScope>().Container;
-				var gameStateManager = gameContainer.Resolve<IGameStateManager>();
-				var choiceController = gameContainer.Resolve<IChoiceObjectController>();
+				var gameStateManager = gameContainer.Resolve<IGameStateManager>();				
 				var container = LifetimeScope.Find<RootLifetimeScope>().Container;
 				var mainManager = container.Resolve<IMainStateManager>();
 				var saveLoadManager = container.Resolve<ISaveLoadManager>();
-				m_logic = new UIInGameMenuLogic(mainManager, choiceController, gameStateManager, saveLoadManager);
+				var gameSwitch = container.Resolve<GameSwitch>();
+				m_logic = new UIInGameMenuLogic(mainManager, gameStateManager, saveLoadManager, gameSwitch);
 			}
 		}
 
@@ -93,9 +93,9 @@ namespace Casual
 	public class UIInGameMenuLogic
 	{
 		IMainStateManager m_mainManager;
-		IChoiceObjectController m_choiceController;
 		IGameStateManager m_gameStateManager;
 		ISaveLoadManager m_saveLoadManager;
+		GameSwitch	m_gameSwitch;
 
 		public enum eMenuState
 		{
@@ -107,12 +107,12 @@ namespace Casual
 		}
 		eMenuState m_eMenuSel = eMenuState.SAVE;
 
-		public UIInGameMenuLogic(IMainStateManager mainManager, IChoiceObjectController choiceController, IGameStateManager gameStateManager, ISaveLoadManager saveLoadManager)
+		public UIInGameMenuLogic(IMainStateManager mainManager, IGameStateManager gameStateManager, ISaveLoadManager saveLoadManager, GameSwitch gameSwitch)
 		{
 			m_mainManager = mainManager;
-			m_choiceController = choiceController;
 			m_gameStateManager = gameStateManager;
 			m_saveLoadManager = saveLoadManager;
+			m_gameSwitch = gameSwitch;
 		}
 
 		public void SelectMenu()
@@ -125,7 +125,7 @@ namespace Casual
 					break;
 				case eMenuState.LOAD:
 					m_saveLoadManager.Load();
-					m_choiceController.UpdateObjects();
+					m_gameSwitch.CheckOnOffs();
 					ChangeToDefaultState();
 					break;
 				case eMenuState.CLOSE:

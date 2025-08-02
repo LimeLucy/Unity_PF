@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: PlayerSpawnPos
   m_EditorClassIdentifier: 
   m_spawnPos:
-  - m_strSceneName: 2_GameScene
-    m_vecPos: {x: 0, y: 3.89, z: 0}
-    m_vecRot: {x: 0, y: 229, z: 0}
   - m_strSceneName: 3_GameScene
     m_vecPos: {x: 0, y: 3.89, z: 0}
     m_vecRot: {x: 0, y: 229, z: 0}
+  - m_strSceneName: 4_GameScene
+    m_vecPos: {x: -80, y: 12.47, z: -67.56}
+    m_vecRot: {x: 0, y: 643.6, z: 0}

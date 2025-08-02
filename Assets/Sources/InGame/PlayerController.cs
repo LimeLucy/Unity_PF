@@ -6,7 +6,7 @@ namespace Casual
 {
 	public class PlayerController : MonoBehaviour
 	{
-		PlayerControllerLogic m_logic = null;		
+		PlayerControllerLogic m_logic = null;
 
 		Transform m_trfThis;	// 플레이어 transform
 		Animator m_animThis; // 플레이어 animator
@@ -21,7 +21,7 @@ namespace Casual
 				if(IsMovable && m_zombie != null)
 					m_logic.ShowNpcName(m_zombie);
 			}
-		}		
+		}
 
 		// 애니메이션 해쉬 값
 		readonly int r_iGrounded = Animator.StringToHash("Grounded");
@@ -29,6 +29,10 @@ namespace Casual
 
 		bool m_isCollidingNpc = false; // npc tag와 충돌여부 체크
 		ZombieController m_zombie = null; // 충돌된 npc 저장
+
+		// For 위치셋팅
+		Vector3 m_vecPosition = Vector3.zero;
+		Vector3 m_vecRotation = Vector3.zero;
 
 		// 이동 방향
 		enum eMoveDir
@@ -38,7 +42,7 @@ namespace Casual
 			Back,
 			Left,
 			Right,
-		}		
+		}
 
 		[SerializeField]
 		float m_fMoveSpeed = 2f; // 캐릭터 이동 속도
@@ -134,12 +138,13 @@ namespace Casual
 					_MoveSide(eMoveDir.Left);
 				else if(Input.GetKey(KeyCode.D))
 					_MoveSide(eMoveDir.Right);
-				else if(Input.GetKey(KeyCode.Q))
-					_MoveCamera(eMoveDir.Left);
-				else if(Input.GetKey(KeyCode.E))
-					_MoveCamera(eMoveDir.Right);
 				else if(Input.GetKeyDown(KeyCode.Escape))
 					m_logic.RunInGameMenu();
+
+				if (Input.GetKey(KeyCode.LeftArrow))
+					_MoveCamera(eMoveDir.Left);
+				else if (Input.GetKey(KeyCode.RightArrow))
+					_MoveCamera(eMoveDir.Right);
 			}
 	}
 
